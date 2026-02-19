@@ -3,8 +3,7 @@
 
 ## Clone the repository
 ```
-[git clone https://github.com/KENMOEmarc/Sentiment-Analysis
-](https://github.com/KENMOEmarc/Sentiment-Analysis.git)
+git clone https://github.com/KENMOEmarc/Sentiment-Analysis
 ```
 
 ## Import th project into your IDE
