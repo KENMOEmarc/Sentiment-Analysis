@@ -17,16 +17,22 @@ public class SentimentController {
         theSentimentService = sentimentService;
     }
 
-    @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping()
-     public void addSentiment(@RequestBody Sentiment sentiment){
-        theSentimentService.save(sentiment);
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public Sentiment getSentiment(@PathVariable Long id){
+        return theSentimentService.getSetiment(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping()
+    @GetMapping
     public List<Sentiment> getSentiments(){
         return theSentimentService.getSentiments();
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
+     public void addSentiment(@RequestBody Sentiment sentiment){
+        theSentimentService.save(sentiment);
     }
 
     @ResponseStatus(HttpStatus.OK)
