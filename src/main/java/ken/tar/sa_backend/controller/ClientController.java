@@ -72,7 +72,7 @@ public class ClientController {
 
     private Client apply(Map<String, Object> patchPayload, Client tempClient) {
 
-        // Convert Client object to a JSON object node
+            // Convert Client object to a JSON object node
         ObjectNode clientNode = objectMapper.convertValue(tempClient, ObjectNode.class);
 
         // Convert the patchPayload map to a JSON object node
