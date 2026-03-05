@@ -31,7 +31,7 @@ public class SentimentService {
                 "Agis comme un expert en analyse de données. 
                 Analyse le sentiment du texte suivant et réponds exclusivement par un seul mot : 'POSITIF' ou 'NEGATIF'.
                 Ne donne aucune explication, ni introduction, ni ponctuation supplémentaire.
-                ​Texte à analyser : [%s]"
+                Texte à analyser : [%s]"
                 """.formatted(sentiment.getText());
         TypeSentiment chatResponse = TypeSentiment.valueOf(theAiService.chat(prompt).toUpperCase());
         sentiment.setSentiment(chatResponse);
