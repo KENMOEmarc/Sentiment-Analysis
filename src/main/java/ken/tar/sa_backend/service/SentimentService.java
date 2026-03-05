@@ -18,18 +18,20 @@ public class SentimentService {
     private final AiService theAiService;
 
     @Autowired
-    public SentimentService(SentimentRepository sentimentRepository, ClientService clientService, AiService theAiService) {
+    public SentimentService(SentimentRepository sentimentRepository, ClientService clientService, AiService aiService) {
         theSentimentRepository = sentimentRepository;
         theClientService = clientService;
-        this.theAiService = theAiService;
+        this.theAiService = aiService;
     }
 
     public void save(Sentiment sentiment) {
         Client theClient = theClientService.readOrCreate(sentiment.getClient());
         sentiment.setClient(theClient);
         String prompt = """
-                Tu es un community manager et tu souhaites analyser le commentaire %s ....
-                Et repondre POSITIF ou NEGATIF en fonction de comment le client a trouve les services de l'entreprise.
+                "Agis comme un expert en analyse de données. 
+                Analyse le sentiment du texte suivant et réponds exclusivement par un seul mot : 'POSITIF' ou 'NEGATIF'.
+                Ne donne aucune explication, ni introduction, ni ponctuation supplémentaire.
+                ​Texte à analyser : [%s]"
                 """.formatted(sentiment.getText());
         TypeSentiment chatResponse = TypeSentiment.valueOf(theAiService.chat(prompt).toUpperCase());
         sentiment.setSentiment(chatResponse);
@@ -44,7 +46,7 @@ public class SentimentService {
         theSentimentRepository.deleteById(id);
     }
 
-    public Sentiment getSetiment(Long id) {
+    public Sentiment getSentiment(Long id) {
         return theSentimentRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Aucun sentiment n'existe avec l'id " + id)
         );
