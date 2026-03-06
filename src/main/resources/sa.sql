@@ -7,7 +7,7 @@ CREATE TABLE CLIENT (
 
 CREATE TABLE SENTIMENT (
     ID integer primary key not null AUTO_INCREMENT,
-    TEXTE varchar(50),
+    TEXTE varchar(70),
     TYPE varchar(10),
     CLIENT_ID integer,
     CONSTRAINT client_fk FOREIGN KEY (CLIENT_ID) REFERENCES CLIENT(ID)

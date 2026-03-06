@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import ken.tar.sa_backend.entity.Client;
-import ken.tar.sa_backend.service.ClientService;
+import ken.tar.sa_backend.service.impl.ClientServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,40 +18,40 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class ClientController {
 
     private ObjectMapper objectMapper;
-    private ClientService clientService;
+    private ClientServiceImpl clientServiceImpl;
 
-    public ClientController(ClientService clientService,  ObjectMapper objectMapper) {
-        this.clientService = clientService;
+    public ClientController(ClientServiceImpl clientServiceImpl, ObjectMapper objectMapper) {
+        this.clientServiceImpl = clientServiceImpl;
         this.objectMapper = objectMapper;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public void createClient(@RequestBody Client client){
-        this.clientService.save(client);
+        this.clientServiceImpl.save(client);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<Client> getAllClients() {
-        return this.clientService.getClients();
+        return this.clientServiceImpl.getClients();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(path="/{id}")
     public Client getClient(@PathVariable int id) {
-        return this.clientService.getClient(id);
+        return this.clientServiceImpl.getClient(id);
     }
 
     @ResponseStatus(NO_CONTENT)
     @PutMapping(path = "{id}")
     public void modifier(@PathVariable int id, @RequestBody Client client) {
-        this.clientService.update(id, client);
+        this.clientServiceImpl.update(id, client);
     }
 
     @PatchMapping("/{id}")
     public Client patchClient(@PathVariable int id, @RequestBody Map<String, Object> patchPayload) {
-        Client tempClient = clientService.getClient(id);
+        Client tempClient = clientServiceImpl.getClient(id);
 
         // throw exception if null
         if (tempClient == null) {
@@ -65,7 +65,7 @@ public class ClientController {
 
         Client patchedClient = apply(patchPayload, tempClient);
 
-        Client dbClient = clientService.update(patchedClient.getId(), patchedClient);
+        Client dbClient = clientServiceImpl.update(patchedClient.getId(), patchedClient);
 
         return dbClient;
     }
