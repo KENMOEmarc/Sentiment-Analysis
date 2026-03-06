@@ -18,4 +18,8 @@ public class AiService {
                 .call()
                 .content();
     }
+
+    public ChatClient getChatClient() {
+        return chatClient;
+    }
 }
