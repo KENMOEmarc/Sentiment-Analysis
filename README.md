@@ -50,8 +50,8 @@ Créez un fichier `application.properties` dans `src/main/resources/` avec les p
 ```properties
 # Base de données MariaDB
 spring.datasource.url=jdbc:mariadb://localhost:3306/sa_backend
-spring.datasource.username=your_db_username
-spring.datasource.password=your_db_password
+spring.datasource.username=${USERNAME}
+spring.datasource.password=${PASSWORD}
 spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
 
 # JPA
@@ -60,13 +60,13 @@ spring.jpa.show-sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MariaDBDialect
 
 # Google AI (Gemini)
-spring.ai.google.genai.api-key=VOTRE_CLE_API_GOOGLE
+spring.ai.google.genai.api-key=${API_KEY}
 
 # Mail SMTP (exemple avec Gmail)
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username=votre.email@gmail.com
-spring.mail.password=votre-mot-de-passe
+spring.mail.username=${EMAIL_USERNAME}
+spring.mail.password=${EMAIL_PASSWORD}
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
@@ -147,3 +147,21 @@ sa-backend/
 ## Contribution
 
 Les contributions sont les bienvenues. Veuillez ouvrir une *issue* pour discuter des changements importants avant de soumettre une *pull request*.
+
+---
+
+## 👤 Auteur
+
+**KENMOE Marc**
+
+GitHub : [@kenmoe](https://github.com/KENMOEmarc)
+
+Email : [kenmarcbertrand@gmail.com](kenmarcbertrand@gmail.com)
+
+---
+
+## 🙏 Remerciements
+
+- Spring Boot
+- OpenAPI
+- PostgreSQL
