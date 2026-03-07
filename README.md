@@ -5,7 +5,6 @@
 ![Maven](https://img.shields.io/badge/Maven-3.8+-red)
 ![MariaDB](https://img.shields.io/badge/MariaDB-Database-blue)
 ![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI-yellow)
-![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-green)
 ![Lombok](https://img.shields.io/badge/Lombok-Available-green)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.0-blue)
 
@@ -78,10 +77,6 @@ spring.mail.password=${EMAIL_PASSWORD}
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-# Swagger UI
-springdoc.api-docs.path=/api-docs
-springdoc.swagger-ui.path=/swagger-ui.html
-```
 ---
 
 ## Installation et exécution
@@ -129,11 +124,6 @@ Lors de l'appel `POST /sentiments`, le service `SentimentServiceImpl` :
 2. Génère un email personnalisé adapté au sentiment.
 3. Envoie l'email à l'adresse du client associé.
 4. Sauvegarde le sentiment avec le résultat de l'analyse.
-
-### Documentation Swagger
-
-Une fois l'application lancée, la documentation interactive est disponible à :  
-[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 ---
 
