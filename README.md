@@ -1,5 +1,14 @@
 # sa-backend
 
+![Java](https://img.shields.io/badge/Java-17-orange)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.10-brightgreen)
+![Maven](https://img.shields.io/badge/Maven-3.8+-red)
+![MariaDB](https://img.shields.io/badge/MariaDB-Database-blue)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI-yellow)
+![Swagger](https://img.shields.io/badge/Swagger-OpenAPI-green)
+![Lombok](https://img.shields.io/badge/Lombok-Available-green)
+![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.0-blue)
+
 **API d'analyse de sentiments d'avis utilisateurs avec Google Gemini**
 
 Cette application Spring Boot permet de recueillir des avis utilisateurs, d'analyser leur sentiment (positif, négatif, neutre) grâce à l'IA générative de Google (Gemini) et de générer automatiquement un email personnalisé en fonction du commentaire, qui est ensuite envoyé à l'utilisateur.
