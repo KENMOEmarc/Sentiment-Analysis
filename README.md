@@ -88,36 +88,36 @@ springdoc.swagger-ui.path=/swagger-ui.html
    ```
    L'application démarre sur le port `8080` par défaut.
 
-## Utilisation
+## Endpoints de l'API
 
-### Endpoint principal
+### Clients (`/clients`)
 
-- **POST /api/avis**  
-  Corps de la requête (JSON) :
-  ```json
-  {
-    "nom": "Jean Dupont",
-    "email": "jean.dupont@example.com",
-    "commentaire": "Super service, je suis très satisfait !"
-  }
-  ```
-  L'API traite l'avis :
-    1. Analyse le sentiment du commentaire avec Gemini.
-    2. Génère un email adapté à ce sentiment (ex. : remerciement pour un avis positif).
-    3. Envoie l'email à l'adresse fournie.
-    4. Sauvegarde l'avis en base de données.
+| Méthode | URL            | Description                          | Corps (JSON)                                 | Réponse                     |
+|---------|----------------|--------------------------------------|----------------------------------------------|-----------------------------|
+| POST    | `/clients`     | Créer un nouveau client              | `{ "nom": "...", "email": "..." }`           | `201 Created`               |
+| GET     | `/clients`     | Récupérer tous les clients           | -                                            | Liste de clients            |
+| GET     | `/clients/{id}`| Récupérer un client par son ID       | -                                            | Client                      |
+| PUT     | `/clients/{id}`| Remplacer complètement un client     | `{ "nom": "...", "email": "..." }`           | `204 No Content`            |
+| PATCH   | `/clients/{id}`| Mise à jour partielle d'un client    | `{ "nom": "...", "email": "..." }` (partiel) | Client mis à jour           |
+| DELETE  | `/clients/{id}`| Supprimer un client                  | -                                            | `200 OK`                    |
 
-  Réponse (exemple) :
-  ```json
-  {
-    "id": 1,
-    "nom": "Jean Dupont",
-    "email": "jean.dupont@example.com",
-    "commentaire": "Super service, je suis très satisfait !",
-    "sentiment": "POSITIF",
-    "dateCreation": "2025-04-07T10:15:30"
-  }
-  ```
+> **Note** : La méthode PATCH accepte un objet JSON partiel et fusionne les modifications avec les données existantes. Le champ `id` n'est pas autorisé dans le corps de la requête PATCH.
+
+### Sentiments (`/sentiments`)
+
+| Méthode | URL                 | Description                          | Corps (JSON)                                 | Réponse                     |
+|---------|---------------------|--------------------------------------|----------------------------------------------|-----------------------------|
+| POST    | `/sentiments`       | Ajouter un nouveau sentiment (avis)  | `{ "commentaire": "...", "client": {...} }`  | `201 Created`               |
+| GET     | `/sentiments`       | Récupérer tous les sentiments        | -                                            | Liste de sentiments         |
+| GET     | `/sentiments/{id}`  | Récupérer un sentiment par son ID    | -                                            | Sentiment                   |
+| DELETE  | `/sentiments/{id}`  | Supprimer un sentiment               | -                                            | `200 OK`                    |
+
+**Traitement spécifique lors de la création d'un sentiment** :  
+Lors de l'appel `POST /sentiments`, le service `SentimentServiceImpl` :
+1. Analyse le commentaire avec Google Gemini pour déterminer le sentiment (POSITIF, NÉGATIF, NEUTRE).
+2. Génère un email personnalisé adapté au sentiment.
+3. Envoie l'email à l'adresse du client associé.
+4. Sauvegarde le sentiment avec le résultat de l'analyse.
 
 ### Documentation Swagger
 
