@@ -9,9 +9,13 @@
 ![Lombok](https://img.shields.io/badge/Lombok-Available-green)
 ![Spring AI](https://img.shields.io/badge/Spring%20AI-1.1.0-blue)
 
+---
+
 **API d'analyse de sentiments d'avis utilisateurs avec Google Gemini**
 
 Cette application Spring Boot permet de recueillir des avis utilisateurs, d'analyser leur sentiment (positif, négatif, neutre) grâce à l'IA générative de Google (Gemini) et de générer automatiquement un email personnalisé en fonction du commentaire, qui est ensuite envoyé à l'utilisateur.
+
+---
 
 ## Fonctionnalités
 
@@ -21,6 +25,8 @@ Cette application Spring Boot permet de recueillir des avis utilisateurs, d'anal
 - Envoi de l'email à l'utilisateur (via SMTP)
 - Stockage des avis en base de données MariaDB
 - Documentation interactive de l'API avec Swagger UI
+
+---
 
 ## Technologies utilisées
 
@@ -42,6 +48,8 @@ Cette application Spring Boot permet de recueillir des avis utilisateurs, d'anal
 - MariaDB installée et accessible
 - Compte Google AI Studio avec une clé API pour les modèles Gemini
 - (Optionnel) Un serveur SMTP pour l'envoi d'emails
+
+---
 
 ## Configuration
 
@@ -74,6 +82,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 springdoc.api-docs.path=/api-docs
 springdoc.swagger-ui.path=/swagger-ui.html
 ```
+---
 
 ## Installation et exécution
 
@@ -87,6 +96,8 @@ springdoc.swagger-ui.path=/swagger-ui.html
    mvn spring-boot:run
    ```
    L'application démarre sur le port `8080` par défaut.
+
+---
 
 ## Endpoints de l'API
 
@@ -124,6 +135,8 @@ Lors de l'appel `POST /sentiments`, le service `SentimentServiceImpl` :
 Une fois l'application lancée, la documentation interactive est disponible à :  
 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
+---
+
 ## Structure du projet
 
 ```
@@ -143,6 +156,22 @@ sa-backend/
 ├── pom.xml
 └── README.md
 ```
+
+---
+
+## Captures Ecran
+
+<img width="1920" height="1080" alt="Screenshot from 2026-03-06 09-48-58" src="https://github.com/user-attachments/assets/abcde29a-9fe8-48ff-9265-a6b5fa57299c" />
+
+<img width="1920" height="1080" alt="Screenshot from 2026-03-06 09-53-46" src="https://github.com/user-attachments/assets/dfe90fb9-a6f9-4b2e-a132-ba979a2724f5" />
+
+![Screenshot_2026-03-06-09-58-05-348_com google android gm](https://github.com/user-attachments/assets/e69e36aa-443e-4fb3-9e0d-e19028f92f2f)
+
+![photo_2026-03-06_09-56-26](https://github.com/user-attachments/assets/9de79d58-b26d-460d-8b51-1bf953f27adb)
+
+![photo_2026-03-06_09-56-24](https://github.com/user-attachments/assets/2b8deee3-e475-4170-8f32-bb88b8d4fe01)
+
+---
 
 ## Contribution
 
