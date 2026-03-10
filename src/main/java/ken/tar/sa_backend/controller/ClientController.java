@@ -1,11 +1,8 @@
 package ken.tar.sa_backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.service.ClientService;
-import ken.tar.sa_backend.service.impl.ClientServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
