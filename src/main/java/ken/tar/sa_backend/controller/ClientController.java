@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import ken.tar.sa_backend.entity.Client;
+import ken.tar.sa_backend.service.ClientService;
 import ken.tar.sa_backend.service.impl.ClientServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,41 +18,39 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 @RequestMapping(value = "/clients")
 public class ClientController {
 
-    private ObjectMapper objectMapper;
-    private ClientServiceImpl clientServiceImpl;
+    private ClientService clientService;
 
-    public ClientController(ClientServiceImpl clientServiceImpl, ObjectMapper objectMapper) {
-        this.clientServiceImpl = clientServiceImpl;
-        this.objectMapper = objectMapper;
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public void createClient(@RequestBody Client client){
-        this.clientServiceImpl.save(client);
+        this.clientService.save(client);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<Client> getAllClients() {
-        return this.clientServiceImpl.getClients();
+        return this.clientService.getClients();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(path="/{id}")
     public Client getClient(@PathVariable int id) {
-        return this.clientServiceImpl.getClient(id);
+        return this.clientService.getClient(id);
     }
 
     @ResponseStatus(NO_CONTENT)
     @PutMapping(path = "{id}")
     public void modifier(@PathVariable int id, @RequestBody Client client) {
-        this.clientServiceImpl.update(id, client);
+        this.clientService.update(id, client);
     }
 
     @PatchMapping("/{id}")
     public Client patchClient(@PathVariable int id, @RequestBody Map<String, Object> patchPayload) {
-        Client tempClient = clientServiceImpl.getClient(id);
+        Client tempClient = clientService.getClient(id);
 
         // throw exception if null
         if (tempClient == null) {
@@ -63,25 +62,11 @@ public class ClientController {
             throw new RuntimeException("Client id not allowed in request body - " + id);
         }
 
-        Client patchedClient = apply(patchPayload, tempClient);
+        Client patchedClient = clientService.applyPatch(patchPayload, tempClient);
 
-        Client dbClient = clientServiceImpl.update(patchedClient.getId(), patchedClient);
+        Client dbClient = clientService.update(patchedClient.getId(), patchedClient);
 
         return dbClient;
-    }
-
-    private Client apply(Map<String, Object> patchPayload, Client tempClient) {
-
-            // Convert Client object to a JSON object node
-        ObjectNode clientNode = objectMapper.convertValue(tempClient, ObjectNode.class);
-
-        // Convert the patchPayload map to a JSON object node
-        ObjectNode patchNode = objectMapper.convertValue(patchPayload, ObjectNode.class);
-
-        // Merge the patch updates into the employee node
-        clientNode.setAll(patchNode);
-
-        return objectMapper.convertValue(clientNode, Client.class);
     }
 
 }
