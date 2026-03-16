@@ -1,7 +1,5 @@
 package ken.tar.sa_backend.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
 import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.service.ClientService;
@@ -11,18 +9,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(value = "/clients")
 public class ClientController {
 
-    private ObjectMapper objectMapper;
     private ClientService clientService;
 
-    public ClientController(ClientService clientService,  ObjectMapper objectMapper) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
-        this.objectMapper = objectMapper;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -63,25 +58,11 @@ public class ClientController {
             throw new RuntimeException("Client id not allowed in request body - " + id);
         }
 
-        Client patchedClient = apply(patchPayload, tempClient);
+        Client patchedClient = clientService.applyPatch(patchPayload, tempClient);
 
         Client dbClient = clientService.update(patchedClient.getId(), patchedClient);
 
         return dbClient;
-    }
-
-    private Client apply(Map<String, Object> patchPayload, Client tempClient) {
-
-            // Convert Client object to a JSON object node
-        ObjectNode clientNode = objectMapper.convertValue(tempClient, ObjectNode.class);
-
-        // Convert the patchPayload map to a JSON object node
-        ObjectNode patchNode = objectMapper.convertValue(patchPayload, ObjectNode.class);
-
-        // Merge the patch updates into the employee node
-        clientNode.setAll(patchNode);
-
-        return objectMapper.convertValue(clientNode, Client.class);
     }
 
 }

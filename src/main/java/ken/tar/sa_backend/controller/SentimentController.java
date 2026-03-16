@@ -20,7 +20,7 @@ public class SentimentController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public Sentiment getSentiment(@PathVariable Long id){
-        return theSentimentService.getSetiment(id);
+        return theSentimentService.getSentiment(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
