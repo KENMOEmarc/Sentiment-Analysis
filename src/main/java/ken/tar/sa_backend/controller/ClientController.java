@@ -5,11 +5,11 @@ import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequestMapping(value = "/clients")
