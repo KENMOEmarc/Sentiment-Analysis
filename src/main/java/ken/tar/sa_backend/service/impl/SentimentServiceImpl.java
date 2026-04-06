@@ -59,18 +59,6 @@ public class SentimentServiceImpl implements SentimentService {
         email.setFrom(appEmail);
         emailService.sendEmail(email);
 
-        String subject = "Customer service compliance";
-        String body = (sentiment.getSentiment() == TypeSentiment.NEGATIF) ?
-                """
-                Nous vous exprimons nos sincères regrets et promettons de faire mieux la prochaine fois.
-                Votre avis a été bien pris en compte, surtout merci de votre franchise.
-                """ :
-                """
-                Merci de votre retour, nous espérons faire encore mieux la prochaine fois.
-                """;
-
-        Email clientEmail = new Email(appEmail, sentiment.getClient().getEmail(), subject, body);
-        emailService.sendEmail(clientEmail);
     }
 
     @Override
