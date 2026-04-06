@@ -19,7 +19,6 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public String sendEmail(Email emailDetails) {
-
         try {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(emailDetails.getFrom());
