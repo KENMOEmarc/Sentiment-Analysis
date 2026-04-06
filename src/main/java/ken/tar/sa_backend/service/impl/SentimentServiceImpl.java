@@ -1,6 +1,7 @@
 package ken.tar.sa_backend.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.entity.Email;
 import ken.tar.sa_backend.entity.Sentiment;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class SentimentServiceImpl implements SentimentService {
@@ -40,25 +42,35 @@ public class SentimentServiceImpl implements SentimentService {
     }
 
     @Override
-    public void save(Sentiment sentiment) {
+    @Transactional
+    public CompletableFuture<Void> save(Sentiment sentiment) {
         Client client = clientService.readOrCreate(sentiment.getClient());
         sentiment.setClient(client);
 
         String prompt = sentimentPrompt.formatted(sentiment.getText());
-        TypeSentiment chatResponse = TypeSentiment.valueOf(aiService.chat(prompt).toUpperCase());
-        sentiment.setSentiment(chatResponse);
-        sentimentRepository.save(sentiment);
-        notifyAdminAndClient(sentiment);
+
+        return aiService.chatAsync(prompt)
+                .thenApply(response -> TypeSentiment.valueOf(response.toUpperCase()))
+                .thenAccept(sentimentType -> {
+                    sentiment.setSentiment(sentimentType);
+                    sentimentRepository.save(sentiment);
+                })
+                .thenRun(() -> notifyAdminAndClient(sentiment)); // fire and forget email
     }
 
     private void notifyAdminAndClient(Sentiment sentiment) {
-        // Génération de l'email via le service IA
         String prompt = emailPrompt.formatted("Avis utilisateur sur vos services : " + sentiment.getText());
-        Email email = aiService.generateEmail(prompt);
-        email.setTo(sentiment.getClient().getEmail());
-        email.setFrom(appEmail);
-        emailService.sendEmail(email);
-
+        aiService.generateEmailAsync(prompt)
+                .thenAccept(email -> {
+                    email.setTo(sentiment.getClient().getEmail());
+                    email.setFrom(appEmail);
+                    emailService.sendEmail(email);
+                })
+                .exceptionally(ex -> {
+                    // Log error but don't break the main flow
+                    System.err.println("Email generation/sending failed: " + ex.getMessage());
+                    return null;
+                });
     }
 
     @Override

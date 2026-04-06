@@ -6,6 +6,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Service
@@ -26,7 +27,6 @@ public class AiServiceImpl implements AiService {
                 .prompt(prompt)
                 .call()
                 .content();
-
     }
 
     @Override
@@ -35,6 +35,16 @@ public class AiServiceImpl implements AiService {
                 .user(prompt)
                 .call()
                 .entity(Email.class);
+    }
+
+    @Override
+    public CompletableFuture<String> chatAsync(String prompt) {
+        return CompletableFuture.supplyAsync(() -> chat(prompt), asyncExecutor);
+    }
+
+    @Override
+    public CompletableFuture<Email> generateEmailAsync(String prompt) {
+        return CompletableFuture.supplyAsync( () -> generateEmail(prompt), asyncExecutor);
     }
 
     public ChatClient getChatClient() {
