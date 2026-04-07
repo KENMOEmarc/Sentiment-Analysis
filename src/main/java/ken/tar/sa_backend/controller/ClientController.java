@@ -40,7 +40,7 @@ public class ClientController {
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{id}")
-    public void modifier(@PathVariable int id, @RequestBody Client client) {
+    public void updateClient(@PathVariable int id, @RequestBody Client client) {
         this.clientService.update(id, client);
     }
 
