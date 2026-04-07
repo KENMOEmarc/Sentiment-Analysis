@@ -16,12 +16,11 @@ public class AiServiceImpl implements AiService {
     private final Executor asyncExecutor;
 
 
-    public AiServiceImpl(ChatClient.Builder builder, @Qualifier("aiTaskExecutor") Executor asyncExecutor) {
+    public AiServiceImpl(ChatClient.Builder builder, @Qualifier("taskExecutor") Executor asyncExecutor) {
         chatClient = builder.build();
         this.asyncExecutor = asyncExecutor;
     }
 
-    @Override
     public String chat(String prompt) {
         return chatClient
                 .prompt(prompt)
@@ -29,7 +28,6 @@ public class AiServiceImpl implements AiService {
                 .content();
     }
 
-    @Override
     public Email generateEmail(String prompt) {
         return chatClient.prompt()
                 .user(prompt)

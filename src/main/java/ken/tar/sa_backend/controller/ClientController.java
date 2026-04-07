@@ -38,7 +38,7 @@ public class ClientController {
         return this.clientService.getClient(id);
     }
 
-    @ResponseStatus(NO_CONTENT)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{id}")
     public void modifier(@PathVariable int id, @RequestBody Client client) {
         this.clientService.update(id, client);

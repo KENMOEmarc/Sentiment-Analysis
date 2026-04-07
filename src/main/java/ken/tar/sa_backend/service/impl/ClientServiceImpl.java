@@ -3,6 +3,7 @@ package ken.tar.sa_backend.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.repository.ClientRepository;
 import ken.tar.sa_backend.service.ClientService;
@@ -39,13 +40,16 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public Client readOrCreate(Client client){
-        Client theClient = theClientRepository.findByEmail(client.getEmail());
-        if(theClient == null) {
-            theClient = theClientRepository.save(client);
+    @Transactional
+    public Client readOrCreate(Client client) {
+        Client existing = theClientRepository.findByEmail(client.getEmail());
+        if (existing != null) {
+            return existing;
+        } else {
+            return theClientRepository.save(client);
         }
-        return theClient;
     }
+
 
     @Override
     public List<Client> getClients() {

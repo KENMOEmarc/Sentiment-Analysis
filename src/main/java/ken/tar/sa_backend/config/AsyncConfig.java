@@ -8,13 +8,13 @@ import java.util.concurrent.Executor;
 
 @Configuration
 public class AsyncConfig {
-    @Bean(name = "aiTaskExecutor")
-    public Executor aiTaskExecutor() {
+    @Bean(name = "taskExecutor")
+    public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(5);
         executor.setMaxPoolSize(10);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("ai-async-");
+        executor.setThreadNamePrefix("task-async-");
         executor.initialize();
         return executor;
     }
