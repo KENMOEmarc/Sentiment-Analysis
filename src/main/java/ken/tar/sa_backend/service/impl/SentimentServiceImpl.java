@@ -1,7 +1,7 @@
 package ken.tar.sa_backend.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import ken.tar.sa_backend.config.LoggerFactory;
 import ken.tar.sa_backend.entity.Client;
 import ken.tar.sa_backend.entity.Email;
 import ken.tar.sa_backend.entity.Sentiment;
@@ -11,8 +11,7 @@ import ken.tar.sa_backend.service.AiService;
 import ken.tar.sa_backend.service.ClientService;
 import ken.tar.sa_backend.service.EmailService;
 import ken.tar.sa_backend.service.SentimentService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,8 +23,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class SentimentServiceImpl implements SentimentService {
 
-    private static final Logger logger = LoggerFactory.getLogger(SentimentServiceImpl.class);
-
+    private final Logger logger;
     private final TransactionTemplate transactionTemplate;
     private final SentimentRepository sentimentRepository;
     private final ClientService clientService;
@@ -42,7 +40,8 @@ public class SentimentServiceImpl implements SentimentService {
     private String appEmail;
 
     @Autowired
-    public SentimentServiceImpl(SentimentRepository sentimentRepository, ClientService clientService, AiService aiService, EmailService emailService, TransactionTemplate transactionTemplate) {
+    public SentimentServiceImpl(LoggerFactory loggerFactory, SentimentRepository sentimentRepository, ClientService clientService, AiService aiService, EmailService emailService, TransactionTemplate transactionTemplate) {
+        this.logger = loggerFactory.getLogger(SentimentServiceImpl.class);
         this.transactionTemplate = transactionTemplate;
         this.sentimentRepository = sentimentRepository;
         this.clientService = clientService;
@@ -61,6 +60,9 @@ public class SentimentServiceImpl implements SentimentService {
                         Client client = clientService.readOrCreate(sentiment.getClient());
                         sentiment.setClient(client);
                         sentiment.setSentiment(type);
+                        logger.info("Saving sentiment for client {}",
+                                sentiment.getClient().getEmail()
+                        );
                         sentimentRepository.save(sentiment);
                     });
                 })
@@ -87,10 +89,12 @@ public class SentimentServiceImpl implements SentimentService {
                 "Avis utilisateur sur vos services : " + sentiment.getText()
         );
 
+        logger.info("Generating email for client {}", clientMail);
         CompletableFuture<Void> clientEmailFuture = aiService.generateEmailAsync(prompt)
                 .thenCompose(email -> {
                     email.setTo(clientMail);
                     email.setFrom(appEmail);
+                    logger.info("Sending email for client {}", clientMail);
                     return emailService.sendEmail(email)
                             .thenAccept(success -> {
                                 if (!success) {
@@ -114,6 +118,7 @@ public class SentimentServiceImpl implements SentimentService {
         adminMail.setSubject("Nouveau sentiment reçu");
         adminMail.setBody(body);
 
+        logger.info("Sending admin email for new sentiment from client {}", clientMail);
         CompletableFuture<Void> adminEmailFuture = emailService.sendEmail(adminMail)
                 .thenAccept(success -> {
                     if (!success) {
@@ -130,19 +135,22 @@ public class SentimentServiceImpl implements SentimentService {
 
     @Override
     public List<Sentiment> getSentiments() {
+        logger.info("Retrieving all sentiments");
         return sentimentRepository.findAll();
     }
 
     @Override
     public void delete(long id) {
+        logger.info("Deleting sentiment with id {}", id);
         sentimentRepository.deleteById(id);
     }
 
     @Override
     public Sentiment getSentiment(Long id) {
         return sentimentRepository.findById(id)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Aucun sentiment n'existe avec l'id " + id)
-                );
+                .orElseThrow(() -> {
+                    logger.warn("Sentiment with id {} not found", id);
+                    return new EntityNotFoundException("Aucun sentiment n'existe avec l'id " + id);
+                });
     }
 }

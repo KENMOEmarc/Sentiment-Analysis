@@ -1,7 +1,9 @@
 package ken.tar.sa_backend.service.impl;
 
+import ken.tar.sa_backend.config.LoggerFactory;
 import ken.tar.sa_backend.entity.Email;
 import ken.tar.sa_backend.service.EmailService;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,19 +16,19 @@ import java.util.concurrent.Executor;
 @Service
 public class EmailServiceImpl implements EmailService {
 
+    private final Logger logger;
     private final JavaMailSender mailSender;
     private final Executor asyncExecutor;
 
-    public EmailServiceImpl(
-            JavaMailSender mailSender,
-            @Qualifier("taskExecutor") Executor asyncExecutor
-    ) {
+    public EmailServiceImpl(LoggerFactory loggerFactory, JavaMailSender mailSender, @Qualifier("taskExecutor") Executor asyncExecutor) {
+        this.logger = loggerFactory.getLogger(EmailServiceImpl.class);
         this.mailSender = mailSender;
         this.asyncExecutor = asyncExecutor;
     }
 
     @Override
     public CompletableFuture<Boolean> sendEmail(Email emailDetails) {
+        logger.info("Preparing to send email to {}", emailDetails.getTo());
         return CompletableFuture.supplyAsync(() -> {
             validate(emailDetails);
 
@@ -42,6 +44,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     private void validate(Email emailDetails) {
+        logger.info("Validating email details for recipient {}", emailDetails.getTo());
         Objects.requireNonNull(emailDetails, "emailDetails must not be null");
 
         if (emailDetails.getTo() == null || emailDetails.getTo().isEmpty()) {
