@@ -66,6 +66,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public List<Client> getClients() {
+        logger.info("Retrieving all clients");
         return theClientRepository.findAll();
     }
 
