@@ -23,6 +23,9 @@ public class ClientController {
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public void createClient(@RequestBody Client client){
+        // also just in case they pass an id in JSON ... set id to 0
+        // this is to force a save of new item ... instead of update
+        client.setId(0);
         this.theClientService.save(client);
     }
 

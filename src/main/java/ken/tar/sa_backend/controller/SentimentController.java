@@ -32,6 +32,9 @@ public class SentimentController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
      public void addSentiment(@RequestBody Sentiment sentiment){
+        // also just in case they pass an id in JSON ... set id to 0
+        // this is to force a save of new item ... instead of update
+        sentiment.setId(0L);
         theSentimentService.save(sentiment);
     }
 
