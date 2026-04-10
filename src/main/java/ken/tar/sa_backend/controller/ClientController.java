@@ -14,39 +14,39 @@ import java.util.Map;
 @RequestMapping(value = "/clients")
 public class ClientController {
 
-    private ClientService clientService;
+    private ClientService theClientService;
 
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
+    public ClientController(ClientService theClientService) {
+        this.theClientService = theClientService;
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
     public void createClient(@RequestBody Client client){
-        this.clientService.save(client);
+        this.theClientService.save(client);
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping
     public List<Client> getAllClients() {
-        return this.clientService.getClients();
+        return this.theClientService.getClients();
     }
 
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(path="/{id}")
     public Client getClient(@PathVariable int id) {
-        return this.clientService.getClient(id);
+        return this.theClientService.getClient(id);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{id}")
     public void updateClient(@PathVariable int id, @RequestBody Client client) {
-        this.clientService.update(id, client);
+        this.theClientService.update(id, client);
     }
 
     @PatchMapping("/{id}")
     public Client patchClient(@PathVariable int id, @RequestBody Map<String, Object> patchPayload) {
-        Client tempClient = clientService.getClient(id);
+        Client tempClient = theClientService.getClient(id);
 
         // throw exception if null
         if (tempClient == null) {
@@ -58,9 +58,9 @@ public class ClientController {
             throw new RuntimeException("Client id not allowed in request body - " + id);
         }
 
-        Client patchedClient = clientService.applyPatch(patchPayload, tempClient);
+        Client patchedClient = theClientService.applyPatch(patchPayload, tempClient);
 
-        Client dbClient = clientService.update(patchedClient.getId(), patchedClient);
+        Client dbClient = theClientService.update(patchedClient.getId(), patchedClient);
 
         return dbClient;
     }

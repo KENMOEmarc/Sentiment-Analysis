@@ -17,12 +17,12 @@ import java.util.concurrent.Executor;
 public class EmailServiceImpl implements EmailService {
 
     private final Logger logger;
-    private final JavaMailSender mailSender;
+    private final JavaMailSender theMailSender;
     private final Executor asyncExecutor;
 
-    public EmailServiceImpl(LoggerFactory loggerFactory, JavaMailSender mailSender, @Qualifier("taskExecutor") Executor asyncExecutor) {
+    public EmailServiceImpl(LoggerFactory loggerFactory, JavaMailSender theMailSender, @Qualifier("taskExecutor") Executor asyncExecutor) {
         this.logger = loggerFactory.getLogger(EmailServiceImpl.class);
-        this.mailSender = mailSender;
+        this.theMailSender = theMailSender;
         this.asyncExecutor = asyncExecutor;
     }
 
@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailService {
             message.setSubject(emailDetails.getSubject());
             message.setText(emailDetails.getBody());
 
-            mailSender.send(message);
+            theMailSender.send(message);
             return true;
         }, asyncExecutor);
     }

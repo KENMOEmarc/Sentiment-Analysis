@@ -20,12 +20,12 @@ public class ClientServiceImpl implements ClientService {
 
     private final Logger logger;
     private final ClientRepository theClientRepository;
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper theObjectMapper;
 
-    public ClientServiceImpl(LoggerFactory loggerFactory, ClientRepository clientRepository, ObjectMapper objectMapper) {
+    public ClientServiceImpl(LoggerFactory loggerFactory, ClientRepository clientRepository, ObjectMapper thObjectMapper) {
         this.logger = loggerFactory.getLogger(ClientServiceImpl.class);
         theClientRepository = clientRepository;
-        this.objectMapper = objectMapper;
+        theObjectMapper = thObjectMapper;
     }
 
     @Override
@@ -98,15 +98,15 @@ public class ClientServiceImpl implements ClientService {
         logger.info("Patching client with id {} using payload {}", tempClient.getId(), patchPayload);
 
         // Convert Client object to a JSON object node
-        ObjectNode clientNode = objectMapper.convertValue(tempClient, ObjectNode.class);
+        ObjectNode clientNode = theObjectMapper.convertValue(tempClient, ObjectNode.class);
 
         // Convert the patchPayload map to a JSON object node
-        ObjectNode patchNode = objectMapper.convertValue(patchPayload, ObjectNode.class);
+        ObjectNode patchNode = theObjectMapper.convertValue(patchPayload, ObjectNode.class);
 
         // Merge the patch updates into the employee node
         clientNode.setAll(patchNode);
 
-        return objectMapper.convertValue(clientNode, Client.class);
+        return theObjectMapper.convertValue(clientNode, Client.class);
     }
 
 }

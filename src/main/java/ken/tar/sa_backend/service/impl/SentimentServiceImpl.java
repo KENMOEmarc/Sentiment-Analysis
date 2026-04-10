@@ -25,10 +25,10 @@ public class SentimentServiceImpl implements SentimentService {
 
     private final Logger logger;
     private final TransactionTemplate transactionTemplate;
-    private final SentimentRepository sentimentRepository;
-    private final ClientService clientService;
-    private final AiService aiService;
-    private final EmailService emailService;
+    private final SentimentRepository theSentimentRepository;
+    private final ClientService theClientService;
+    private final AiService theAiService;
+    private final EmailService theEmailService;
 
     @Value("${app.prompt.sentiment}")
     private String sentimentPrompt;
@@ -40,30 +40,30 @@ public class SentimentServiceImpl implements SentimentService {
     private String appEmail;
 
     @Autowired
-    public SentimentServiceImpl(LoggerFactory loggerFactory, SentimentRepository sentimentRepository, ClientService clientService, AiService aiService, EmailService emailService, TransactionTemplate transactionTemplate) {
+    public SentimentServiceImpl(LoggerFactory loggerFactory, SentimentRepository theSentimentRepository, ClientService theClientService, AiService aiService, EmailService theEmailService, TransactionTemplate transactionTemplate) {
         this.logger = loggerFactory.getLogger(SentimentServiceImpl.class);
         this.transactionTemplate = transactionTemplate;
-        this.sentimentRepository = sentimentRepository;
-        this.clientService = clientService;
-        this.aiService = aiService;
-        this.emailService = emailService;
+        this.theSentimentRepository = theSentimentRepository;
+        this.theClientService = theClientService;
+        this.theAiService = aiService;
+        this.theEmailService = theEmailService;
     }
 
     @Override
     public CompletableFuture<Void> save(Sentiment sentiment) {
         String prompt = sentimentPrompt.formatted(sentiment.getText());
 
-        return aiService.chatAsync(prompt)
+        return theAiService.chatAsync(prompt)
                 .thenApply(this::parseSentiment)
                 .thenAccept(type -> {
                     transactionTemplate.executeWithoutResult(status -> {
-                        Client client = clientService.readOrCreate(sentiment.getClient());
+                        Client client = theClientService.readOrCreate(sentiment.getClient());
                         sentiment.setClient(client);
                         sentiment.setSentiment(type);
                         logger.info("Saving sentiment for client {}",
                                 sentiment.getClient().getEmail()
                         );
-                        sentimentRepository.save(sentiment);
+                        theSentimentRepository.save(sentiment);
                     });
                 })
                 .thenCompose(v -> notify(sentiment))
@@ -90,12 +90,12 @@ public class SentimentServiceImpl implements SentimentService {
         );
 
         logger.info("Generating email for client {}", clientMail);
-        CompletableFuture<Void> clientEmailFuture = aiService.generateEmailAsync(prompt)
+        CompletableFuture<Void> clientEmailFuture = theAiService.generateEmailAsync(prompt)
                 .thenCompose(email -> {
                     email.setTo(clientMail);
                     email.setFrom(appEmail);
                     logger.info("Sending email for client {}", clientMail);
-                    return emailService.sendEmail(email)
+                    return theEmailService.sendEmail(email)
                             .thenAccept(success -> {
                                 if (!success) {
                                     logger.warn("Client email not sent for sentiment");
@@ -119,7 +119,7 @@ public class SentimentServiceImpl implements SentimentService {
         adminMail.setBody(body);
 
         logger.info("Sending admin email for new sentiment from client {}", clientMail);
-        CompletableFuture<Void> adminEmailFuture = emailService.sendEmail(adminMail)
+        CompletableFuture<Void> adminEmailFuture = theEmailService.sendEmail(adminMail)
                 .thenAccept(success -> {
                     if (!success) {
                         logger.warn("Admin email not sent for sentiment");
@@ -136,18 +136,18 @@ public class SentimentServiceImpl implements SentimentService {
     @Override
     public List<Sentiment> getSentiments() {
         logger.info("Retrieving all sentiments");
-        return sentimentRepository.findAll();
+        return theSentimentRepository.findAll();
     }
 
     @Override
     public void delete(long id) {
         logger.info("Deleting sentiment with id {}", id);
-        sentimentRepository.deleteById(id);
+        theSentimentRepository.deleteById(id);
     }
 
     @Override
     public Sentiment getSentiment(Long id) {
-        return sentimentRepository.findById(id)
+        return theSentimentRepository.findById(id)
                 .orElseThrow(() -> {
                     logger.warn("Sentiment with id {} not found", id);
                     return new EntityNotFoundException("Aucun sentiment n'existe avec l'id " + id);
