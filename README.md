@@ -37,7 +37,6 @@ Cette application Spring Boot permet de recueillir des avis utilisateurs, d'anal
 - Spring AI 1.1.0 (starter Google GenAI)
 - MariaDB
 - Lombok
-- Springdoc OpenAPI 2.0.4
 - Maven
 
 ## Prérequis
@@ -52,7 +51,7 @@ Cette application Spring Boot permet de recueillir des avis utilisateurs, d'anal
 
 ## Configuration
 
-Créez un fichier `application.properties` dans `src/main/resources/` avec les paramètres suivants :
+Regarder le fichier `application.properties` dans `src/main/resources/` et fournir les paramètres suivants :
 
 ```properties
 # Base de données MariaDB
@@ -82,6 +81,7 @@ spring.mail.properties.mail.smtp.starttls.enable=true
 ## Installation et exécution
 
 1. **Cloner le dépôt** (ou télécharger les sources)
+3. **Ouvrir le pom.xml et chargez les dépendences**
 2. **Compiler le projet** :
    ```bash
    mvn clean install
@@ -182,5 +182,6 @@ Email : [kenmarcbertrand@gmail.com](kenmarcbertrand@gmail.com)
 ## 🙏 Remerciements
 
 - Spring Boot
-- OpenAPI
 - PostgreSQL
+- Docker
+- [@chillo-tech](https://github.com/chillo-tech) 
