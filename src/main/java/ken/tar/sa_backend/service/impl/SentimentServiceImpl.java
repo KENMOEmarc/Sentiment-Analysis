@@ -40,13 +40,13 @@ public class SentimentServiceImpl implements SentimentService {
     private String appEmail;
 
     @Autowired
-    public SentimentServiceImpl(LoggerFactory loggerFactory, SentimentRepository theSentimentRepository, ClientService theClientService, AiService aiService, EmailService theEmailService, TransactionTemplate transactionTemplate) {
+    public SentimentServiceImpl(LoggerFactory loggerFactory, SentimentRepository sentimentRepository, ClientService clientService, AiService aiService, EmailService emailService, TransactionTemplate transactionTemplate) {
         this.logger = loggerFactory.getLogger(SentimentServiceImpl.class);
         this.transactionTemplate = transactionTemplate;
-        this.theSentimentRepository = theSentimentRepository;
-        this.theClientService = theClientService;
-        this.theAiService = aiService;
-        this.theEmailService = theEmailService;
+        theSentimentRepository = sentimentRepository;
+        theClientService = clientService;
+        theAiService = aiService;
+        theEmailService = emailService;
     }
 
     @Override
