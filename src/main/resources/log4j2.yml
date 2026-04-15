@@ -10,7 +10,7 @@ Configuration:
       - name: LOG_DIRECTORY
         value: logs
       - name: LOG_FILE
-        value: ${LOG_DIRECTORY}/application.json
+        value: ${LOG_DIRECTORY}/application.log
 
   Appenders:
     Console:
@@ -22,7 +22,7 @@ Configuration:
     RollingFile:
       name: File
       fileName: "${LOG_FILE}"
-      filePattern: "${LOG_DIRECTORY}/application-%d{yyyy-MM-dd}-%i.json.gz"
+      filePattern: "${LOG_DIRECTORY}/application-%d{yyyy-MM-dd}-%i.log.gz"
       JsonLayout:
         compact: true
         eventEol: true
